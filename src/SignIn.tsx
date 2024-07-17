@@ -1,11 +1,5 @@
 import { Authsignal } from "@authsignal/browser";
-import {
-  confirmSignIn,
-  signIn,
-  SignInInput,
-  signUp,
-  SignUpInput,
-} from "aws-amplify/auth";
+import { Auth } from "aws-amplify";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -13,6 +7,8 @@ const authsignal = new Authsignal({
   tenantId: import.meta.env.VITE_AUTHSIGNAL_TENANT_ID!,
   baseUrl: import.meta.env.VITE_AUTHSIGNAL_URL!,
 });
+
+let cognitoUser;
 
 export function SignIn() {
   const [email, setEmail] = useState("");
@@ -35,17 +31,15 @@ export function SignIn() {
             // Create user in Cognito
             // If they already exist then ignore error and continue
             try {
-              const signUpInput: SignUpInput = {
+              const signUpInput = {
                 username: email,
                 password: Math.random().toString(36).slice(-16) + "X", // Dummy value - never used
-                options: {
-                  userAttributes: {
-                    email,
-                  },
+                attributes: {
+                  email,
                 },
               };
 
-              await signUp(signUpInput);
+              await Auth.signUp(signUpInput);
             } catch (ex) {
               if (
                 ex instanceof Error &&
@@ -55,22 +49,9 @@ export function SignIn() {
               }
             }
 
-            const signInInput: SignInInput = {
-              username: email,
-              options: {
-                authFlowType: "CUSTOM_WITHOUT_SRP",
-              },
-            };
+            cognitoUser = await Auth.signIn(email);
 
-            const { nextStep } = await signIn(signInInput);
-
-            if (
-              nextStep.signInStep !== "CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE"
-            ) {
-              return;
-            }
-
-            const url = nextStep.additionalInfo!.url;
+            const { url } = cognitoUser.challengeParam;
 
             const { token } = await authsignal.launch(url, { mode: "popup" });
 
@@ -78,7 +59,7 @@ export function SignIn() {
               return alert("Sign in error");
             }
 
-            await confirmSignIn({ challengeResponse: token });
+            await Auth.sendCustomChallengeAnswer(cognitoUser, token);
 
             navigate("/");
           }}

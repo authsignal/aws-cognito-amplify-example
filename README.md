@@ -82,17 +82,15 @@ The example app only has a "Sign in" page - as part of this flow we try to creat
 
 ```ts
 try {
-  const signUpInput: SignUpInput = {
+  const signUpInput = {
     username: email,
     password: Math.random().toString(36).slice(-16) + "X", // Dummy value - never used
-    options: {
-      userAttributes: {
-        email,
-      },
+    attributes: {
+      email,
     },
   };
 
-  await signUp(signUpInput);
+  await Auth.signUp(signUpInput);
 } catch (ex) {
   if (ex instanceof Error && ex.name !== "UsernameExistsException") {
     throw ex;
@@ -110,18 +108,11 @@ Once the user has completed the challenge, the Authsignal Web SDK returns a toke
 We pass this token back to the Amplify `confirmSignIn` method, which invokes the [Verify Auth Challenge Response lambda](#verify-auth-challenge-response-lambda).
 
 ```ts
-const signInInput = {
-  username: email,
-  options: {
-    authFlowType: "CUSTOM_WITHOUT_SRP",
-  },
-};
+cognitoUser = await Auth.signIn(email);
 
-const { nextStep } = await signIn(signInInput);
-
-const url = nextStep.additionalInfo.url;
+const { url } = cognitoUser.challengeParam;
 
 const { token } = await authsignal.launch(url, { mode: "popup" });
 
-await confirmSignIn({ challengeResponse: token });
+await Auth.sendCustomChallengeAnswer(cognitoUser, token);
 ```

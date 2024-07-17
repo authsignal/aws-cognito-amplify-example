@@ -1,4 +1,4 @@
-import { getCurrentUser, signOut } from "aws-amplify/auth";
+import { Auth } from "aws-amplify";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,10 +9,12 @@ export function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getCurrentUser()
-      .then((user) => {
-        setUserId(user.userId);
-        setUsername(user.username);
+    Auth.currentSession()
+      .then((session) => {
+        const idTokenPayload = session.getIdToken().decodePayload();
+
+        setUserId(idTokenPayload["sub"]);
+        setUsername(idTokenPayload["cognito:username"]);
       })
       .catch((ex) => {
         console.error(ex);
@@ -33,7 +35,7 @@ export function Home() {
         <div>Cognito username: {username}</div>
         <button
           onClick={() => {
-            signOut();
+            Auth.signOut();
 
             navigate("/sign-in");
           }}
