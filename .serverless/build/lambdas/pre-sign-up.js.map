@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../lambdas/pre-sign-up.ts"],
-  "sourcesContent": ["import { PreSignUpTriggerHandler } from \"aws-lambda\";\n\nexport const handler: PreSignUpTriggerHandler = async (event) => {\n  event.response.autoConfirmUser = true;\n\n  return event;\n};\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEO,IAAM,UAAmC,OAAO,UAAU;AAC/D,QAAM,SAAS,kBAAkB;AAEjC,SAAO;AACT;",
-  "names": []
-}

@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../lambdas/define-auth-challenge.ts"],
-  "sourcesContent": ["import { DefineAuthChallengeTriggerHandler } from \"aws-lambda\";\n\nexport const handler: DefineAuthChallengeTriggerHandler = async (event) => {\n  const { session } = event.request;\n\n  const challengeSucceeded =\n    session &&\n    session.length > 0 &&\n    session[session.length - 1].challengeResult === true;\n\n  if (challengeSucceeded) {\n    event.response.issueTokens = true;\n    event.response.failAuthentication = false;\n  } else {\n    event.response.issueTokens = false;\n    event.response.failAuthentication = false;\n    event.response.challengeName = \"CUSTOM_CHALLENGE\";\n  }\n\n  return event;\n};\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEO,IAAM,UAA6C,OAAO,UAAU;AACzE,QAAM,EAAE,QAAQ,IAAI,MAAM;AAE1B,QAAM,qBACJ,WACA,QAAQ,SAAS,KACjB,QAAQ,QAAQ,SAAS,CAAC,EAAE,oBAAoB;AAElD,MAAI,oBAAoB;AACtB,UAAM,SAAS,cAAc;AAC7B,UAAM,SAAS,qBAAqB;AAAA,EACtC,OAAO;AACL,UAAM,SAAS,cAAc;AAC7B,UAAM,SAAS,qBAAqB;AACpC,UAAM,SAAS,gBAAgB;AAAA,EACjC;AAEA,SAAO;AACT;",
-  "names": []
-}
