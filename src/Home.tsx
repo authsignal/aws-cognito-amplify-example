@@ -1,6 +1,7 @@
 import { getCurrentUser, signOut } from "aws-amplify/auth";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { authsignal } from "./authsignal";
 
 export function Home() {
   const [userId, setUserId] = useState<string | undefined>();

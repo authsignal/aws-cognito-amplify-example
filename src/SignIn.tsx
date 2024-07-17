@@ -1,4 +1,3 @@
-import { Authsignal } from "@authsignal/browser";
 import {
   confirmSignIn,
   signIn,
@@ -9,10 +8,6 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const authsignal = new Authsignal({
-  tenantId: import.meta.env.VITE_AUTHSIGNAL_TENANT_ID!,
-  baseUrl: import.meta.env.VITE_AUTHSIGNAL_URL!,
-});
 
 export function SignIn() {
   const [email, setEmail] = useState("");
