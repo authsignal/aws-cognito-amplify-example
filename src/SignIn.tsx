@@ -7,7 +7,7 @@ import {
 } from "aws-amplify/auth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { authsignal } from "./authsignal";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
