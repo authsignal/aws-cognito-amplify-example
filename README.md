@@ -20,7 +20,7 @@ This example repo contains [four lambdas](https://github.com/authsignal/aws-cogn
 
 Once deployed, these lambdas can be connected to your Cognito user pool:
 
-![AWS Cognito triggers!](/cognito-triggers.png "AWS Cognito triggers")
+![AWS Cognito triggers](https://mintlify.s3-us-west-1.amazonaws.com/authsignal-23/images/docs/aws/cognito-triggers.png)
 
 ### Create auth challenge lambda
 
