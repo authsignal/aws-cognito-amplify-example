@@ -12,7 +12,11 @@ export const handler: VerifyAuthChallengeResponseTriggerHandler = async (
   const userId = event.request.userAttributes.sub;
   const token = event.request.challengeAnswer;
 
-  const { state } = await authsignal.validateChallenge({ userId, token });
+  const { state } = await authsignal.validateChallenge({
+    action: "cognitoAuth",
+    userId,
+    token,
+  });
 
   event.response.answerCorrect = state === "CHALLENGE_SUCCEEDED";
 

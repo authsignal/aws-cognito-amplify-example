@@ -21,12 +21,12 @@
     a11y-dialog "8.0.4"
     uuid "^9.0.0"
 
-"@authsignal/node@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@authsignal/node/-/node-1.0.6.tgz#5f5b4084d3ea9ecb6b9dc3f08d065b6220566882"
-  integrity sha512-MBAFpFcoZj6D0wJ3yJK8OfKS6ElKZPj/H28NHczF7Uc1RobI2ctmqh8lu19hENl7f4uI0c8AokRxYZWk+5IeJQ==
+"@authsignal/node@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@authsignal/node/-/node-1.1.1.tgz#3cc61e81a1d8929281269d686c708a6d25f4bcea"
+  integrity sha512-LN2MUAeBAKMrqDfED/LouK74JT5isNPnrl/7J/yD0fPjoYj3adimes1yCxIzVmxpDuqrKD/HXEvMqjby9DW44w==
   dependencies:
-    axios "^1.6.8"
+    axios "^1.7.2"
 
 "@aws-amplify/analytics@7.0.37":
   version "7.0.37"
@@ -1986,7 +1986,7 @@ axios-proxy-builder@^0.1.2:
   dependencies:
     tunnel "^0.0.6"
 
-axios@^1.6.0, axios@^1.6.8:
+axios@^1.6.0, axios@^1.7.2:
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.2.tgz#b625db8a7051fbea61c35a3cbb3a1daa7b9c7621"
   integrity sha512-2A8QhOMrbomlDuiLeK9XibIBzuHeRcqqNOHp0Cyp5EoJ1IFDh+XZH3A6BkXtv0K4gFGCI0Y4BM7B1wOEi0Rmgw==
