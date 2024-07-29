@@ -5,14 +5,25 @@ import {
   signUp,
   SignUpInput,
 } from "aws-amplify/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authsignal } from "./authsignal";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  const onVerificationStarted = () => setLoading(true);
+
+  useEffect(() => {
+    authsignal.passkey
+      .signIn({ action: "cognitoAuth", autofill: true, onVerificationStarted })
+      .then(handlePasskeySignIn)
+      .then(() => navigate("/"))
+      .finally(() => setLoading(false));
+  }, [navigate]);
 
   return (
     <main>
@@ -22,6 +33,7 @@ export function SignIn() {
           id="email"
           type="email"
           name="email"
+          autoComplete="webauthn"
           onChange={(event) => setEmail(event.target.value)}
           required
         />
@@ -75,12 +87,36 @@ export function SignIn() {
 
             await confirmSignIn({ challengeResponse: token });
 
+            localStorage.setItem("authsignal_token", token);
+
             navigate("/");
           }}
         >
-          Sign in
+          {loading ? "Loading..." : "Sign in"}
         </button>
       </section>
     </main>
   );
+}
+
+type PasskeySignInResponse = {
+  token?: string;
+  userName?: string;
+};
+
+async function handlePasskeySignIn(response?: PasskeySignInResponse) {
+  if (!response?.token || !response?.userName) {
+    return;
+  }
+
+  const signInInput: SignInInput = {
+    username: response.userName,
+    options: {
+      authFlowType: "CUSTOM_WITHOUT_SRP",
+    },
+  };
+
+  await signIn(signInInput);
+
+  await confirmSignIn({ challengeResponse: response.token });
 }
