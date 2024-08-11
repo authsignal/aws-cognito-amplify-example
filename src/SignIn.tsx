@@ -11,6 +11,7 @@ import { authsignal } from "./authsignal";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -27,6 +28,8 @@ export function SignIn() {
         />
         <button
           onClick={async () => {
+            setLoading(true);
+
             // Create user in Cognito
             // If they already exist then ignore error and continue
             try {
@@ -75,10 +78,12 @@ export function SignIn() {
 
             await confirmSignIn({ challengeResponse: token });
 
+            setLoading(false);
+
             navigate("/");
           }}
         >
-          Sign in
+          {loading ? "Loading..." : "Sign in"}
         </button>
       </section>
     </main>
