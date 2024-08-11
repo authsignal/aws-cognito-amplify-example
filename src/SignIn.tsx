@@ -45,6 +45,8 @@ export function SignIn() {
 
               await signUp(signUpInput);
             } catch (ex) {
+              setLoading(false);
+
               if (
                 ex instanceof Error &&
                 ex.name !== "UsernameExistsException"
@@ -65,6 +67,8 @@ export function SignIn() {
             if (
               nextStep.signInStep !== "CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE"
             ) {
+              setLoading(false);
+
               return;
             }
 
@@ -73,6 +77,8 @@ export function SignIn() {
             const { token } = await authsignal.launch(url, { mode: "popup" });
 
             if (!token) {
+              setLoading(false);
+
               return alert("Sign in error");
             }
 
