@@ -1,9 +1,9 @@
-import { confirmSignIn, signIn } from "aws-amplify/auth";
+import { confirmSignIn, signIn, signUp } from "aws-amplify/auth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authsignal } from "./authsignal";
 
-export function SignIn() {
+export function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,6 +34,16 @@ export function SignIn() {
             setLoading(true);
 
             try {
+              await signUp({
+                username: email,
+                password,
+                options: {
+                  userAttributes: {
+                    email,
+                  },
+                },
+              });
+
               const { nextStep } = await signIn({
                 username: email,
                 password,
@@ -64,10 +74,10 @@ export function SignIn() {
             }
           }}
         >
-          {loading ? "Loading..." : "Sign in"}
+          {loading ? "Loading..." : "Create account"}
         </button>
         <div>
-          Don't have an account? <a href="/sign-up">Sign up</a>
+          Already have an account? <a href="/sign-in">Sign in</a>
         </div>
       </section>
     </main>

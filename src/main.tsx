@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home } from "./Home.tsx";
 import { SignIn } from "./SignIn.tsx";
+import { SignUp } from "./SignUp.tsx";
 import "./index.css";
 
 Amplify.configure({
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "sign-in",
     element: <SignIn />,
+  },
+  {
+    path: "sign-up",
+    element: <SignUp />,
   },
 ]);
 
