@@ -14,13 +14,7 @@ export function SignIn() {
     <main>
       <section>
         <label htmlFor="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          name="email"
-          onChange={(event) => setEmail(event.target.value)}
-          required
-        />
+        <input id="email" type="email" name="email" onChange={(event) => setEmail(event.target.value)} required />
         <label htmlFor="password">Password</label>
         <input
           id="password"
@@ -42,17 +36,28 @@ export function SignIn() {
                 },
               });
 
-              if (
-                nextStep.signInStep !== "CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE"
-              ) {
+              if (nextStep.signInStep !== "CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE") {
                 return setLoading(false);
               }
 
-              const url = nextStep.additionalInfo!.url;
+              const { state, token, url } = nextStep.additionalInfo!;
 
-              const { token } = await authsignal.launch(url, { mode: "popup" });
+              if (state === "ALLOW") {
+                // We already have a token so just validate the user is allowed to bypass MFA
+                await confirmSignIn({ challengeResponse: token });
+              } else {
+                // Launch the pre-built UI to present an MFA challenge
+                // We will validate the token returned after the user completes the challenge
+                const response = await authsignal.launch(url, { mode: "popup" });
 
-              await confirmSignIn({ challengeResponse: token! });
+                if (!response.token) {
+                  setLoading(false);
+
+                  return alert("Sign in error");
+                }
+
+                await confirmSignIn({ challengeResponse: response.token });
+              }
 
               navigate("/");
             } catch (ex) {
