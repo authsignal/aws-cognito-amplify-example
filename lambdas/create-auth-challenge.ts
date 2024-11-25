@@ -1,10 +1,10 @@
 import { Authsignal } from "@authsignal/node";
 import { CreateAuthChallengeTriggerHandler } from "aws-lambda";
 
-const secret = process.env.AUTHSIGNAL_SECRET!;
-const apiBaseUrl = process.env.AUTHSIGNAL_URL!;
+const apiSecretKey = process.env.AUTHSIGNAL_URL!;
+const apiUrl = process.env.AUTHSIGNAL_SECRET!;
 
-const authsignal = new Authsignal({ secret, apiBaseUrl });
+const authsignal = new Authsignal({ apiSecretKey, apiUrl });
 
 export const handler: CreateAuthChallengeTriggerHandler = async (event) => {
   const userId = event.request.userAttributes.sub;
@@ -13,7 +13,7 @@ export const handler: CreateAuthChallengeTriggerHandler = async (event) => {
   const { url } = await authsignal.track({
     action: "cognitoAuth",
     userId,
-    email,
+    attributes: { email },
   });
 
   event.response.publicChallengeParameters = { url };
