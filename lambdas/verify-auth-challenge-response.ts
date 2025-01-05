@@ -1,8 +1,8 @@
 import { Authsignal } from "@authsignal/node";
 import { VerifyAuthChallengeResponseTriggerHandler } from "aws-lambda";
 
-const apiSecretKey = process.env.AUTHSIGNAL_URL!;
-const apiUrl = process.env.AUTHSIGNAL_SECRET!;
+const apiSecretKey = process.env.AUTHSIGNAL_SECRET!;
+const apiUrl = process.env.AUTHSIGNAL_URL!;
 
 const authsignal = new Authsignal({ apiSecretKey, apiUrl });
 

@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "noEmit": true,
+      "skipLibCheck": true,
+      "strict": true,
+      "forceConsistentCasingInFileNames": true,
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "target": "ES5"
+    },
+  }
+  
