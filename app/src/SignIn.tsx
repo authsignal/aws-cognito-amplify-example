@@ -1,11 +1,5 @@
-import {
-  confirmSignIn,
-  signIn,
-  SignInInput,
-  signUp,
-  SignUpInput,
-} from "aws-amplify/auth";
-import { useState } from "react";
+import { confirmSignIn, signIn, SignInInput, signUp, SignUpInput } from "aws-amplify/auth";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authsignal } from "./authsignal";
 
@@ -15,6 +9,16 @@ export function SignIn() {
 
   const navigate = useNavigate();
 
+  const onVerificationStarted = () => setLoading(true);
+
+  useEffect(() => {
+    authsignal.passkey
+      .signIn({ action: "cognitoAuth", autofill: true, onVerificationStarted })
+      .then(handlePasskeySignIn)
+      .then(() => navigate("/"))
+      .finally(() => setLoading(false));
+  }, [navigate]);
+
   return (
     <main>
       <section>
@@ -23,6 +27,7 @@ export function SignIn() {
           id="email"
           type="email"
           name="email"
+          autoComplete="webauthn"
           onChange={(event) => setEmail(event.target.value)}
           required
         />
@@ -47,10 +52,7 @@ export function SignIn() {
             } catch (ex) {
               setLoading(false);
 
-              if (
-                ex instanceof Error &&
-                ex.name !== "UsernameExistsException"
-              ) {
+              if (ex instanceof Error && ex.name !== "UsernameExistsException") {
                 throw ex;
               }
             }
@@ -64,9 +66,7 @@ export function SignIn() {
 
             const { nextStep } = await signIn(signInInput);
 
-            if (
-              nextStep.signInStep !== "CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE"
-            ) {
+            if (nextStep.signInStep !== "CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE") {
               setLoading(false);
 
               return;
@@ -86,6 +86,8 @@ export function SignIn() {
 
             setLoading(false);
 
+            localStorage.setItem("authsignal_token", token);
+
             navigate("/");
           }}
         >
@@ -94,4 +96,26 @@ export function SignIn() {
       </section>
     </main>
   );
+}
+
+type PasskeySignInResponse = {
+  token?: string;
+  userName?: string;
+};
+
+async function handlePasskeySignIn(response?: PasskeySignInResponse) {
+  if (!response?.token || !response?.userName) {
+    return;
+  }
+
+  const signInInput: SignInInput = {
+    username: response.userName,
+    options: {
+      authFlowType: "CUSTOM_WITHOUT_SRP",
+    },
+  };
+
+  await signIn(signInInput);
+
+  await confirmSignIn({ challengeResponse: response.token });
 }
