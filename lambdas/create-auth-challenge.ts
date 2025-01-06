@@ -20,9 +20,9 @@ export const handler: CreateAuthChallengeTriggerHandler = async (event) => {
   const { url } = await authsignal.track({
     action: "cognitoAuth",
     userId,
-    attributes: { 
-        email,
-        challengeId,
+    attributes: {
+      email,
+      challengeId,
     },
   });
 
