@@ -3,10 +3,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { authsignal } from "./authsignal";
-import { getDeviceId, getOrCreateDeviceId } from "./device";
+import { getIsDeviceTrusted, getOrCreateDeviceId, setIsDeviceTrusted } from "./device";
 
 export function SignIn() {
-  const [rememberDevice, setRememberDevice] = useState(getDeviceId() !== null);
+  const [rememberDevice, setRememberDevice] = useState(getIsDeviceTrusted());
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,19 +40,19 @@ export function SignIn() {
           onClick={async () => {
             setLoading(true);
 
-            const options: Record<string, any> = {
-              authFlowType: "CUSTOM_WITH_SRP",
-            };
-
-            if (rememberDevice) {
-              options.clientMetadata = { deviceId: getOrCreateDeviceId() };
-            }
+            setIsDeviceTrusted(rememberDevice);
 
             try {
               const { nextStep } = await signIn({
                 username: email,
                 password,
-                options,
+                options: {
+                  authFlowType: "CUSTOM_WITH_SRP",
+                  clientMetadata: {
+                    deviceId: getOrCreateDeviceId(),
+                    isDeviceTrusted: String(rememberDevice),
+                  },
+                },
               });
 
               if (nextStep.signInStep !== "CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE") {
