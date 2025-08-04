@@ -84,6 +84,12 @@ input {
   height: 40px;
 }
 
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
 a {
   color: #525eea;
   cursor: pointer;
@@ -91,4 +97,11 @@ a {
 
 div {
   word-wrap: break-word;
+}
+
+#device {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: "#666";
 }

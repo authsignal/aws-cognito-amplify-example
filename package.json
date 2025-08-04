@@ -1,5 +1,5 @@
 {
-  "name": "aws-cognito-amplify-example-v2",
+  "name": "cognito-web-example",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,13 +12,14 @@
   },
   "dependencies": {
     "@authsignal/browser": "^0.5.2",
-    "aws-amplify": "6.5.0",
+    "aws-amplify": "^6.15.4",
+    "cognito-srp-helper": "^2.3.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.24.1"
+    "react-router-dom": "^6.24.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@authsignal/node": "2.0.0",
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

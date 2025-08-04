@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function Home() {
-  const [userId, setUserId] = useState<string | undefined>();
   const [username, setUsername] = useState<string | undefined>();
 
   const navigate = useNavigate();
@@ -11,7 +10,6 @@ export function Home() {
   useEffect(() => {
     getCurrentUser()
       .then((user) => {
-        setUserId(user.userId);
         setUsername(user.username);
       })
       .catch((ex) => {
@@ -21,7 +19,7 @@ export function Home() {
       });
   }, [navigate]);
 
-  if (!userId) {
+  if (!username) {
     return null;
   }
 
@@ -29,7 +27,6 @@ export function Home() {
     <main>
       <section>
         <h1>My Example App</h1>
-        <div>Cognito userId: {userId}</div>
         <div>Cognito username: {username}</div>
         <button
           onClick={() => {
