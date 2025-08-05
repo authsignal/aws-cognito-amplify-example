@@ -22,6 +22,10 @@ export function getIsDeviceTrusted(): boolean {
   return localStorage.getItem("@is_device_trusted") === "true";
 }
 
+export function getIsDeviceTrustedSet(): boolean {
+  return localStorage.getItem("@is_device_trusted") !== null;
+}
+
 export function setIsDeviceTrusted(value: boolean) {
   localStorage.setItem("@is_device_trusted", String(value));
 }

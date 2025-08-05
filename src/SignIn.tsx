@@ -1,11 +1,10 @@
 import { confirmSignIn, signIn } from "aws-amplify/auth";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authsignal } from "./authsignal";
-import { getIsDeviceTrusted, getOrCreateDeviceId, setIsDeviceTrusted } from "./device";
+import { getIsDeviceTrusted, getIsDeviceTrustedSet, getOrCreateDeviceId, setIsDeviceTrusted } from "./device";
 
 export function SignIn() {
-  const [rememberDevice, setRememberDevice] = useState(getIsDeviceTrusted());
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordSignInLoading, setPasswordSignInLoading] = useState(false);
@@ -13,10 +12,10 @@ export function SignIn() {
 
   const navigate = useNavigate();
 
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
   const handleSignInWithPassword = async () => {
     setPasswordSignInLoading(true);
-
-    setIsDeviceTrusted(rememberDevice);
 
     try {
       const { nextStep } = await signIn({
@@ -26,7 +25,7 @@ export function SignIn() {
           authFlowType: "CUSTOM_WITH_SRP",
           clientMetadata: {
             deviceId: getOrCreateDeviceId(),
-            isDeviceTrusted: String(rememberDevice),
+            isDeviceTrusted: getIsDeviceTrusted() ? "true" : "false",
           },
         },
       });
@@ -46,7 +45,15 @@ export function SignIn() {
         if (token) {
           await confirmSignIn({ challengeResponse: token });
 
-          navigate("/");
+          const isDeviceTrustedSet = getIsDeviceTrustedSet();
+
+          console.log("isDeviceTrustedSet", isDeviceTrustedSet);
+
+          if (!isDeviceTrustedSet && dialogRef.current) {
+            dialogRef.current.showModal();
+          } else {
+            navigate("/");
+          }
         }
       } else if (state === "ALLOW") {
         const token = nextStep.additionalInfo!.token;
@@ -100,16 +107,6 @@ export function SignIn() {
           onChange={(event) => setPassword(event.target.value)}
           required
         />
-        <div id="device">
-          <input
-            type="checkbox"
-            id="rememberDevice"
-            name="rememberDevice"
-            checked={rememberDevice}
-            onChange={(e) => setRememberDevice(e.target.checked)}
-          />
-          <label htmlFor="rememberDevice">Remember this device</label>
-        </div>
         <button onClick={handleSignInWithPassword}>{passwordSignInLoading ? "Loading..." : "Sign in"}</button>
         <div className="text-center">or</div>
         <button onClick={handleSignInWithPasskey}>
@@ -119,6 +116,33 @@ export function SignIn() {
           Don't have an account? <a href="/sign-up">Sign up</a>
         </div>
       </section>
+      <dialog ref={dialogRef}>
+        <p>Remember this device?</p>
+        <div className="dialog-buttons">
+          <button
+            onClick={() => {
+              setIsDeviceTrusted(false);
+
+              dialogRef.current?.close();
+
+              navigate("/");
+            }}
+          >
+            No
+          </button>
+          <button
+            onClick={() => {
+              setIsDeviceTrusted(true);
+
+              dialogRef.current?.close();
+
+              navigate("/");
+            }}
+          >
+            Yes
+          </button>
+        </div>
+      </dialog>
     </main>
   );
 }

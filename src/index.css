@@ -109,3 +109,9 @@ div {
   font-size: 14px;
   color: "#666";
 }
+
+.dialog-buttons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
