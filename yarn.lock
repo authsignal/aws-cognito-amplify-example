@@ -10,14 +10,13 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@authsignal/browser@^0.5.2":
-  version "0.5.11"
-  resolved "https://registry.yarnpkg.com/@authsignal/browser/-/browser-0.5.11.tgz#a2c27de8636caa08f457b4991ad6c9294f541d3d"
-  integrity sha512-NnL1QJM0f/brsMcgF0dU8AQr0vvQMlPXV99i8DgwoBY0XCZF/XIEuMMIFYn5/g19+n71arOvgM2RhIgzWtGqtQ==
+"@authsignal/browser@^1.9.1":
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/@authsignal/browser/-/browser-1.9.1.tgz#75a1e3eca7d3a7db865f5fed99aa6fc25bb60ea0"
+  integrity sha512-ERfwma/P4OiSg8/s2bSrU8lxEdDr/lU3ph3RRw9FjbobB99XnFUrwdaPZlmiYIdh4fYkCFQblWIiF/0cFLZXsA==
   dependencies:
     "@fingerprintjs/fingerprintjs" "^3.3.6"
-    "@simplewebauthn/browser" "^10.0.0"
-    "@simplewebauthn/types" "^10.0.0"
+    "@simplewebauthn/browser" "^13.1.0"
     a11y-dialog "8.0.4"
     uuid "^9.0.0"
 
@@ -1601,17 +1600,10 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.18.1.tgz#0cb240c147c0dfd0e3eaff4cc060a772d39e155c"
   integrity sha512-yjk2MAkQmoaPYCSu35RLJ62+dz358nE83VfTePJRp8CG7aMg25mEJYpXFiD+NcevhX8LxD5OP5tktPXnXN7GDw==
 
-"@simplewebauthn/browser@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/@simplewebauthn/browser/-/browser-10.0.0.tgz#8305a57dacb35ab6a71a8b670c699ee7ef1c11c4"
-  integrity sha512-hG0JMZD+LiLUbpQcAjS4d+t4gbprE/dLYop/CkE01ugU/9sKXflxV5s0DRjdz3uNMFecatRfb4ZLG3XvF8m5zg==
-  dependencies:
-    "@simplewebauthn/types" "^10.0.0"
-
-"@simplewebauthn/types@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/@simplewebauthn/types/-/types-10.0.0.tgz#a07259d42fbdff7a014473f78401d262b298ed8e"
-  integrity sha512-SFXke7xkgPRowY2E+8djKbdEznTVnD5R6GO7GPTthpHrokLvNKw8C3lFZypTxLI7KkCfGPfhtqB3d7OVGGa9jQ==
+"@simplewebauthn/browser@^13.1.0":
+  version "13.1.2"
+  resolved "https://registry.yarnpkg.com/@simplewebauthn/browser/-/browser-13.1.2.tgz#e904373854616e469c4c1ab9d8c4f704e9ac6db1"
+  integrity sha512-aZnW0KawAM83fSBUgglP5WofbrLbLyr7CoPqYr66Eppm7zO86YX6rrCjRB3hQKPrL7ATvY4FVXlykZ6w6FwYYw==
 
 "@smithy/abort-controller@^3.1.9":
   version "3.1.9"

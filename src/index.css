@@ -99,6 +99,10 @@ div {
   word-wrap: break-word;
 }
 
+.text-center {
+  text-align: center;
+}
+
 #device {
   display: flex;
   align-items: center;

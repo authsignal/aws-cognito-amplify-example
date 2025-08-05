@@ -1,7 +1,6 @@
 import { confirmSignIn, signIn } from "aws-amplify/auth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { authsignal } from "./authsignal";
 import { getIsDeviceTrusted, getOrCreateDeviceId, setIsDeviceTrusted } from "./device";
 
@@ -9,9 +8,84 @@ export function SignIn() {
   const [rememberDevice, setRememberDevice] = useState(getIsDeviceTrusted());
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [passwordSignInLoading, setPasswordSignInLoading] = useState(false);
+  const [passkeySignInLoading, setPasskeySignInLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleSignInWithPassword = async () => {
+    setPasswordSignInLoading(true);
+
+    setIsDeviceTrusted(rememberDevice);
+
+    try {
+      const { nextStep } = await signIn({
+        username: email,
+        password,
+        options: {
+          authFlowType: "CUSTOM_WITH_SRP",
+          clientMetadata: {
+            deviceId: getOrCreateDeviceId(),
+            isDeviceTrusted: String(rememberDevice),
+          },
+        },
+      });
+
+      if (nextStep.signInStep !== "CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE") {
+        throw new Error("Unexpected sign-in step");
+      }
+
+      const state = nextStep.additionalInfo!.state;
+      const isEnrolled = nextStep.additionalInfo!.isEnrolled === "true";
+
+      if (!isEnrolled || state === "CHALLENGE_REQUIRED") {
+        const url = nextStep.additionalInfo!.url;
+
+        const { token } = await authsignal.launch(url, { mode: "popup" });
+
+        if (token) {
+          await confirmSignIn({ challengeResponse: token });
+
+          navigate("/");
+        }
+      } else if (state === "ALLOW") {
+        const token = nextStep.additionalInfo!.token;
+
+        if (token) {
+          await confirmSignIn({ challengeResponse: token });
+
+          navigate("/");
+        }
+      }
+    } catch (ex) {
+      if (ex instanceof Error) {
+        alert("Error signing in: " + ex.message);
+      }
+    }
+
+    setPasswordSignInLoading(false);
+  };
+
+  const handleSignInWithPasskey = async () => {
+    setPasskeySignInLoading(true);
+
+    const { data } = await authsignal.passkey.signIn({ action: "passkeySignIn" });
+
+    if (data && data.token && data.username) {
+      await signIn({
+        username: data.username,
+        options: {
+          authFlowType: "CUSTOM_WITHOUT_SRP",
+        },
+      });
+
+      await confirmSignIn({ challengeResponse: data.token });
+
+      navigate("/");
+
+      setPasskeySignInLoading(false);
+    }
+  };
 
   return (
     <main>
@@ -36,61 +110,10 @@ export function SignIn() {
           />
           <label htmlFor="rememberDevice">Remember this device</label>
         </div>
-        <button
-          onClick={async () => {
-            setLoading(true);
-
-            setIsDeviceTrusted(rememberDevice);
-
-            try {
-              const { nextStep } = await signIn({
-                username: email,
-                password,
-                options: {
-                  authFlowType: "CUSTOM_WITH_SRP",
-                  clientMetadata: {
-                    deviceId: getOrCreateDeviceId(),
-                    isDeviceTrusted: String(rememberDevice),
-                  },
-                },
-              });
-
-              if (nextStep.signInStep !== "CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE") {
-                throw new Error("Unexpected sign-in step");
-              }
-
-              const state = nextStep.additionalInfo!.state;
-              const isEnrolled = nextStep.additionalInfo!.isEnrolled === "true";
-
-              if (!isEnrolled || state === "CHALLENGE_REQUIRED") {
-                const url = nextStep.additionalInfo!.url;
-
-                const { token } = await authsignal.launch(url, { mode: "popup" });
-
-                if (token) {
-                  await confirmSignIn({ challengeResponse: token });
-
-                  navigate("/");
-                }
-              } else if (state === "ALLOW") {
-                const token = nextStep.additionalInfo!.token;
-
-                if (token) {
-                  await confirmSignIn({ challengeResponse: token });
-
-                  navigate("/");
-                }
-              }
-            } catch (ex) {
-              if (ex instanceof Error) {
-                alert("Error signing in: " + ex.message);
-              }
-            }
-
-            setLoading(false);
-          }}
-        >
-          {loading ? "Loading..." : "Sign in"}
+        <button onClick={handleSignInWithPassword}>{passwordSignInLoading ? "Loading..." : "Sign in"}</button>
+        <div className="text-center">or</div>
+        <button onClick={handleSignInWithPasskey}>
+          {passkeySignInLoading ? "Loading..." : "Sign in with passkey"}
         </button>
         <div>
           Don't have an account? <a href="/sign-up">Sign up</a>
