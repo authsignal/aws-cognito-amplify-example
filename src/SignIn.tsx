@@ -25,7 +25,7 @@ export function SignIn() {
           authFlowType: "CUSTOM_WITH_SRP",
           clientMetadata: {
             deviceId: getOrCreateDeviceId(),
-            isDeviceTrusted: getIsDeviceTrusted() ? "true" : "false",
+            isDeviceTrusted: getIsDeviceTrusted(),
           },
         },
       });

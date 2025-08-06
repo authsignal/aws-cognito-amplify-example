@@ -18,8 +18,8 @@ export function getOrCreateDeviceId(): string {
   return newDeviceId;
 }
 
-export function getIsDeviceTrusted(): boolean {
-  return localStorage.getItem("@is_device_trusted") === "true";
+export function getIsDeviceTrusted(): string {
+  return localStorage.getItem("@is_device_trusted") ?? "false";
 }
 
 export function getIsDeviceTrustedSet(): boolean {
