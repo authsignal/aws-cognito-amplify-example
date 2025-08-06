@@ -35,9 +35,8 @@ export function SignIn() {
       }
 
       const state = nextStep.additionalInfo!.state;
-      const isEnrolled = nextStep.additionalInfo!.isEnrolled === "true";
 
-      if (!isEnrolled || state === "CHALLENGE_REQUIRED") {
+      if (state === "CHALLENGE_REQUIRED") {
         const url = nextStep.additionalInfo!.url;
 
         const { token } = await authsignal.launch(url, { mode: "popup" });
@@ -46,8 +45,6 @@ export function SignIn() {
           await confirmSignIn({ challengeResponse: token });
 
           const isDeviceTrustedSet = getIsDeviceTrustedSet();
-
-          console.log("isDeviceTrustedSet", isDeviceTrustedSet);
 
           if (!isDeviceTrustedSet && dialogRef.current) {
             dialogRef.current.showModal();
